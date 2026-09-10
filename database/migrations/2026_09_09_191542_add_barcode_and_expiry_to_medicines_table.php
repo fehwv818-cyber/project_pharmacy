@@ -11,9 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumns('medicines', ['barcode', 'expiry_date'])) {
+            return;
+        }
+
         Schema::table('medicines', function (Blueprint $table) {
-            $table->string('barcode')->nullable()->unique()->after('name');
-            $table->date('expiry_date')->nullable()->after('stock_quantity');
+            if (! Schema::hasColumn('medicines', 'barcode')) {
+                $table->string('barcode')->nullable()->unique()->after('name');
+            }
+            if (! Schema::hasColumn('medicines', 'expiry_date')) {
+                $table->date('expiry_date')->nullable()->after('stock_quantity');
+            }
         });
     }
 
